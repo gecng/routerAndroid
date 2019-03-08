@@ -1,0 +1,33 @@
+apply plugin: 'java-library'
+apply plugin: 'kotlin'
+apply plugin: 'kotlin-kapt'
+
+kapt {
+    arguments {
+        arg("moduleNameArg", "xxxxxx")
+    }
+}
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation project(':RouteAnnotation')
+    implementation 'com.google.auto.service:auto-service:1.0-rc4'
+    kapt "com.google.auto.service:auto-service:1.0-rc4"
+    implementation 'com.squareup:kotlinpoet:1.1.0'
+}
+
+sourceCompatibility = "7"
+targetCompatibility = "7"
+buildscript {
+    ext.kotlin_version = '1.3.21'
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+
+    }
+}
+repositories {
+    mavenCentral()
+}
