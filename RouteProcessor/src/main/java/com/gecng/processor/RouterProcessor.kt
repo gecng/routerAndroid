@@ -3,18 +3,17 @@ package com.gecng.processor
 import com.gecng.routeannotation.Route
 import com.gecng.routeannotation.RouterInfo
 import com.google.auto.service.AutoService
-import com.squareup.kotlinpoet.FileSpec
-import com.squareup.kotlinpoet.FunSpec
+import com.squareup.kotlinpoet.*
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
-import com.squareup.kotlinpoet.TypeName
-import com.squareup.kotlinpoet.TypeSpec
 import java.io.File
 import javax.annotation.processing.*
 import javax.lang.model.SourceVersion
 import javax.lang.model.element.TypeElement
 import javax.tools.Diagnostic
 
-
+/**
+ * 处理注解，生成 路由表
+ */
 @AutoService(Processor::class)
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
 class RouterProcessor : AbstractProcessor() {
@@ -35,7 +34,7 @@ class RouterProcessor : AbstractProcessor() {
 
         val options = pe?.options
         moduleName = options?.get(MODULE_NAME_ARG) ?: ""
-        messager?.printMessage(Diagnostic.Kind.WARNING, "$moduleName init ============== >")
+        messager?.printMessage(Diagnostic.Kind.NOTE, "$moduleName init ============== >")
     }
 
     /**
@@ -43,7 +42,7 @@ class RouterProcessor : AbstractProcessor() {
      */
     override fun process(set: MutableSet<out TypeElement>?, roundEnv: RoundEnvironment?): Boolean {
 
-        messager?.printMessage(Diagnostic.Kind.WARNING, "$moduleName process ============== >")
+        messager?.printMessage(Diagnostic.Kind.NOTE, "$moduleName process ============== >")
 
         if (moduleName.isBlank()) {
             return false
@@ -58,55 +57,41 @@ class RouterProcessor : AbstractProcessor() {
         if (!isActivity) {
             return false
         }
-
-
         val mapType = LinkedHashMap::class.parameterizedBy(String::class, RouterInfo::class)
         val funBuilder = FunSpec.builder("register")
+            .addModifiers(KModifier.OVERRIDE)
             .returns(mapType)
             .addStatement(
-                "val routeMap = %T<%T,%T>()",
-                LinkedHashMap::class.java,
-                String::class,
-                RouterInfo::class
-
+                "val routeMap = %T<%T,%T>()", LinkedHashMap::class.java, String::class, RouterInfo::class
             )
-
-
 
         elements.forEach { e ->
             val routeAnn = e.getAnnotation(Route::class.java)
             val path = routeAnn.path
             funBuilder.addStatement(
-                "routeMap[%S] = %T(%S, %T::class.java)",
-                path,
-                RouterInfo::class.java,
-                path,
-                e.asType()
+                "routeMap[%S] = %T(%S, %T::class.java)", path, RouterInfo::class.java, path, e.asType()
             )
         }
 
         funBuilder.addStatement("return routeMap")
 
-
-        FileSpec.builder("com.gecng.router", "ModuleRouter")
+        //todo 尽量减少硬编码
+        FileSpec.builder("com.gecng.router.$moduleName", "${moduleName}_module_router_table")
             .addType(
-                TypeSpec.classBuilder("ModuleRouterTable")
+                TypeSpec.classBuilder("${moduleName}_module_router_table")
                     .addFunction(funBuilder.build())
+                    .addSuperinterface(ClassName.bestGuess("com.gecng.routeannotation.IRouteTable"))
                     .build()
             )
-
-
             .build()
             .writeFile()
-        //参数
-
-
         return true
     }
 
     private fun FileSpec.writeFile() {
 
         val kaptKotlinGeneratedDir = processingEnv.options[KAPT_KOTLIN_GENERATED_OPTION_NAME]
+        messager?.printMessage(Diagnostic.Kind.WARNING, "$kaptKotlinGeneratedDir init ============== >")
         val outputFile = File(kaptKotlinGeneratedDir).apply {
             mkdirs()
         }
@@ -114,6 +99,9 @@ class RouterProcessor : AbstractProcessor() {
     }
 
 
+    /**
+     * 添加需要处理的注解
+     */
     override fun getSupportedAnnotationTypes(): MutableSet<String> {
         val set = LinkedHashSet<String>()
         set.add(Route::class.java.canonicalName)

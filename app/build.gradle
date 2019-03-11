@@ -30,6 +30,15 @@ android {
     }
 
 
+    sourceSets {
+        main {
+            java {
+                srcDir "${buildDir.absolutePath}/generated/source/kaptKotlin/"
+            }
+        }
+    }
+
+
 
 
 }
@@ -44,5 +53,5 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     kapt project(':RouteProcessor')
     implementation project(':RouteAnnotation')
-
+    api project(':routerlib')
 }
