@@ -19,6 +19,8 @@ open class BaseProcessor : AbstractProcessor() {
 
     companion object {
         const val PACKAGE_NAME = "com.gecng.router"
+        const val ROUTE_CLASS_NAME = "com.gecng.routeannotation.IRouteTable"
+        const val INTERCEPTOR_CLASS_NAME = "com.gecng.routeannotation.IInterceptorTable"
     }
 
     lateinit var logger: Logger
@@ -38,15 +40,12 @@ open class BaseProcessor : AbstractProcessor() {
     }
 
 
-    fun FileSpec.writeFile() {
-
-
+    fun write2File(fileSpec: FileSpec) {
         val kaptKotlinGeneratedDir = processingEnv.options[RouterProcessor.KAPT_KOTLIN_GENERATED_OPTION_NAME]
         val outputFile = File(kaptKotlinGeneratedDir).apply {
             mkdirs()
         }
-        writeTo(outputFile.toPath())
+        fileSpec.writeTo(outputFile.toPath())
     }
-
 
 }

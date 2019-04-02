@@ -1,7 +1,6 @@
 package com.gecng.processor.handler
 
 import com.gecng.processor.ActivityFilter
-import com.gecng.routeannotation.Interceptor
 import com.gecng.routeannotation.Route
 import com.gecng.routeannotation.RouterInfo
 import com.google.auto.service.AutoService
@@ -24,7 +23,6 @@ class ActivityHandler : BaseProcessor() {
 
 
     override fun process(set: MutableSet<out TypeElement>?, roundEnv: RoundEnvironment?): Boolean {
-
 
         val elements = roundEnv?.getElementsAnnotatedWith(Route::class.java)
         if (elements.isNullOrEmpty()) {
@@ -51,14 +49,15 @@ class ActivityHandler : BaseProcessor() {
 
         funBuilder.addStatement("return routeMap")
 
-        FileSpec.builder("$PACKAGE_NAME.$moduleName", "${moduleName}_module_router_table")
+        val fileSpec = FileSpec.builder("$PACKAGE_NAME.$moduleName", "${moduleName}_router_table")
             .addType(
-                TypeSpec.classBuilder("${moduleName}_module_router_table")
+                TypeSpec.classBuilder("${moduleName}_router_table")
                     .addFunction(funBuilder.build())
-                    .addSuperinterface(ClassName.bestGuess("com.gecng.routeannotation.IRouteTable"))
+                    .addSuperinterface(ClassName.bestGuess(ROUTE_CLASS_NAME))
                     .build()
             )
-            .build().writeFile()
+            .build()
+        write2File(fileSpec)
         return false
     }
 
@@ -67,7 +66,6 @@ class ActivityHandler : BaseProcessor() {
      */
     override fun getSupportedAnnotationTypes(): MutableSet<String> {
         val set = mutableSetOf<String>()
-        set.add(Interceptor::class.java.canonicalName)
         set.add(Route::class.java.canonicalName)
         return set
     }

@@ -25,22 +25,13 @@ import javax.lang.model.element.TypeElement
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
 class InterceptorHandler : BaseProcessor() {
 
-    override fun init(pe: ProcessingEnvironment?) {
-        super.init(pe)
-        logger.W("Interceptor begin to init")
-    }
-
-
     override fun process(set: MutableSet<out TypeElement>?, roundEnv: RoundEnvironment?): Boolean {
 
 
         val elements = roundEnv?.getElementsAnnotatedWith(Interceptor::class.java)
-        logger.W("Interceptor begin to process \t\n\n\n $elements ")
         if (elements.isNullOrEmpty()) {
-            logger.W("Interceptor begin to end")
             return false
         }
-        logger.W("Interceptor begin to process")
         val activityList = elements.filter { return@filter true }.toMutableList()
         val mapType = LinkedHashMap::class.parameterizedBy(String::class, InterceptorInfo::class)
         val funBuilder = FunSpec.builder("register")
@@ -67,23 +58,23 @@ class InterceptorHandler : BaseProcessor() {
 
         funBuilder.addStatement("return interceptorMap")
 
-        FileSpec.builder("$PACKAGE_NAME.$moduleName", "${moduleName}_module_interceptor_table")
+        val fileSpec = FileSpec.builder("$PACKAGE_NAME.$moduleName", "${moduleName}_interceptor_table")
             .addType(
-                TypeSpec.classBuilder("${moduleName}_module_interceptor_table")
+                TypeSpec.classBuilder("${moduleName}_interceptor_table")
                     .addFunction(funBuilder.build())
-                    .addSuperinterface(ClassName.bestGuess("com.gecng.routeannotation.IInterceptorTable"))
+                    //继承 父类
+                    .addSuperinterface(ClassName.bestGuess(INTERCEPTOR_CLASS_NAME))
                     .build()
             )
-            .build().writeFile()
+            .build()
+        write2File(fileSpec)
         return true
     }
 
 
     override fun getSupportedAnnotationTypes(): MutableSet<String> {
         val set = mutableSetOf<String>()
-        logger.W("Interceptor begin to getSupportedAnnotationTypes")
         set.add(Interceptor::class.java.canonicalName)
-        set.add(Route::class.java.canonicalName)
         return set
     }
 
