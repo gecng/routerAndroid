@@ -1,8 +1,12 @@
+### Kotlin版 安卓路由 ，借鉴了其他路由框架，自己实现了一个轮子。
+### 思路
+#### 1.在每个activity上添加 Route注解，并为注解的url属性赋值。形成 url 到 activity的映射关系。每个module都有一个自己的路由表，通过kotlin poet 生成相关的代码，并打包到apk 中。路由表的生成的位置 和名称 都是自己定义好的，也是方便反射获取实例对象。
+#### 2.在application 初始化的时候，反射获取映射表的实例，放到一个map中。这样就可以通过一个url 获取 相应的 activity.
 
-#### 1.每个模块的路由汇总在当前模块下的ModuleRouterTable下
-#### 2.反射获取各个模块的ModuleRouterTable 实例，通过 获取map集合
-
-
+---
+### 完成的功能
+#### 1.activity 跳转
+#### 2.拦截器
 ---
 
 ### TodoList
