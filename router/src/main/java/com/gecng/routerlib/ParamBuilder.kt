@@ -48,7 +48,6 @@ class ParamBuilder {
 
 
     fun route() {
-
         SRouter.INSTANCE.route(this)
     }
 

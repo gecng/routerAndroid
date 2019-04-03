@@ -1,6 +1,7 @@
 package com.gecng.routerlib
 
 import com.gecng.routeannotation.IRouteTable
+import com.gecng.routeannotation.RouteConst
 import com.gecng.routeannotation.RouterInfo
 
 class ModuleTableCollector {
@@ -12,8 +13,8 @@ class ModuleTableCollector {
 
             val totalMap = LinkedHashMap<String, RouterInfo>()
 
-            moduleList.forEach {
-                val clazzPath = "com.gecng.router.$it.${it}_module_router_table"
+            moduleList.forEach { module ->
+                val clazzPath = String.format(RouteConst.ROUTE_TABLE_PATH_FORMAT, module)
                 val moduleMap = (Class.forName(clazzPath).newInstance() as? IRouteTable)?.register()
                 if (moduleMap != null) {
                     totalMap.putAll(moduleMap)

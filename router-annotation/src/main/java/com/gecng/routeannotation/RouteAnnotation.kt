@@ -6,7 +6,7 @@ package com.gecng.routeannotation
  */
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.SOURCE)
-annotation class Route(val path: String)
+annotation class Route(val path: String, vararg val interceptors: String)
 
 /**
  * 拦截器注解

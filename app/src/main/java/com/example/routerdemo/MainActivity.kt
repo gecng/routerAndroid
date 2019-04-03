@@ -8,7 +8,7 @@ import com.gecng.routerlib.SRouter
 import com.gecng.routerlib.interceptor.IInterceptor
 import kotlinx.android.synthetic.main.activity_main.*
 
-@Route(path = "app/mainAct")
+@Route(path = "app/mainAct",interceptors = ["x1","x2"])
 class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {

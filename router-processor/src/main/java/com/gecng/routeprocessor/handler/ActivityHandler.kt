@@ -1,7 +1,9 @@
-package com.gecng.processor.handler
+package com.gecng.routeprocessor.handler
 
-import com.gecng.processor.ActivityFilter
+import com.gecng.routeannotation.IRouteTable
+import com.gecng.routeprocessor.ActivityFilter
 import com.gecng.routeannotation.Route
+import com.gecng.routeannotation.RouteConst
 import com.gecng.routeannotation.RouterInfo
 import com.google.auto.service.AutoService
 import com.squareup.kotlinpoet.*
@@ -34,26 +36,47 @@ class ActivityHandler : BaseProcessor() {
             .addModifiers(KModifier.OVERRIDE)
             .returns(mapType)
             .addStatement("val routeMap = %T<%T,%T>()", LinkedHashMap::class.java, String::class, RouterInfo::class)
+            .addStatement("\n")
 
-        activityList.forEach { e ->
+        activityList.forEachIndexed { index, e ->
             val routeAnn = e.getAnnotation(Route::class.java)
             val path = routeAnn.path
-            funBuilder.addStatement(
-                "routeMap[%S] = %T(%S, %T::class.java)",
-                path,
-                RouterInfo::class.java,
-                path,
-                e.asType()
-            )
+            val interceptors = routeAnn.interceptors
+
+            funBuilder
+                .addStatement("val info%L = %T(%S, %T::class.java)", index, RouterInfo::class.java, path, e.asType())
+                .apply {
+                    if (!interceptors.isNullOrEmpty()) {
+                        addStatement(
+                            "val interceptorArray%L = %T(%L)",
+                            index,
+                            ArrayList::class.parameterizedBy(String::class),
+                            interceptors.size
+                        )
+
+                        interceptors.forEachIndexed { j, intercept ->
+                            addStatement("interceptorArray%L[%L] = %S", index, j, intercept)
+                        }
+
+                        addStatement("info%1L.interceptors = interceptorArray%1L", index)
+
+                    }
+
+                }
+                .addStatement("routeMap[%S] = info%L", path, index)
+                .addStatement("\n")
+
+
         }
 
         funBuilder.addStatement("return routeMap")
 
-        val fileSpec = FileSpec.builder("$PACKAGE_NAME.$moduleName", "${moduleName}_router_table")
+        val tableClazzName = String.format(RouteConst.ROUTE_TABLE_NAME_FORMAT, moduleName)
+        val fileSpec = FileSpec.builder(RouteConst.ROUTE_FILE_DIR, tableClazzName)
             .addType(
-                TypeSpec.classBuilder("${moduleName}_router_table")
+                TypeSpec.classBuilder(tableClazzName)
                     .addFunction(funBuilder.build())
-                    .addSuperinterface(ClassName.bestGuess(ROUTE_CLASS_NAME))
+                    .addSuperinterface(IRouteTable::class)
                     .build()
             )
             .build()

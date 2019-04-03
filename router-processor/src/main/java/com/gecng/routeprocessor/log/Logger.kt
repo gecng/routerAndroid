@@ -1,4 +1,4 @@
-package com.gecng.processor.log
+package com.gecng.routeprocessor.log
 
 import javax.annotation.processing.Messager
 import javax.tools.Diagnostic

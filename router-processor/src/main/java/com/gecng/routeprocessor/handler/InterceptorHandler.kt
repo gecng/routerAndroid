@@ -1,12 +1,12 @@
-package com.gecng.processor.handler
+package com.gecng.routeprocessor.handler
 
+import com.gecng.routeannotation.IInterceptorTable
 import com.gecng.routeannotation.Interceptor
 import com.gecng.routeannotation.InterceptorInfo
-import com.gecng.routeannotation.Route
+import com.gecng.routeannotation.RouteConst
 import com.google.auto.service.AutoService
 import com.squareup.kotlinpoet.*
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
-import javax.annotation.processing.ProcessingEnvironment
 import javax.annotation.processing.Processor
 import javax.annotation.processing.RoundEnvironment
 import javax.annotation.processing.SupportedSourceVersion
@@ -47,23 +47,21 @@ class InterceptorHandler : BaseProcessor() {
         activityList.forEach { e ->
             val routeAnn = e.getAnnotation(Interceptor::class.java)
             val path = routeAnn.name
-            funBuilder.addStatement(
-                "interceptorMap[%S] = %T(%S, %T::class.java)",
-                path,
-                InterceptorInfo::class.java,
-                path,
-                e.asType()
-            )
+            funBuilder
+                .addStatement("val info = %T(%S, %T::class.java)", InterceptorInfo::class.java, path, e.asType())
+                .addStatement("interceptorMap[%S] = info", path)
+
         }
 
         funBuilder.addStatement("return interceptorMap")
 
-        val fileSpec = FileSpec.builder("$PACKAGE_NAME.$moduleName", "${moduleName}_interceptor_table")
+        val tableClazzName = String.format(RouteConst.INTERCEPTOR_NAME_FORMAT, moduleName)
+        val fileSpec = FileSpec.builder(RouteConst.INTERCEPTOR_FILE_DIR, tableClazzName)
             .addType(
-                TypeSpec.classBuilder("${moduleName}_interceptor_table")
+                TypeSpec.classBuilder(tableClazzName)
                     .addFunction(funBuilder.build())
                     //继承 父类
-                    .addSuperinterface(ClassName.bestGuess(INTERCEPTOR_CLASS_NAME))
+                    .addSuperinterface(IInterceptorTable::class)
                     .build()
             )
             .build()
