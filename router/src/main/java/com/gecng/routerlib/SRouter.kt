@@ -2,8 +2,9 @@ package com.gecng.routerlib
 
 import android.content.Context
 import android.content.Intent
-import com.gecng.routeannotation.InterceptorInfo
 import com.gecng.routeannotation.RouterInfo
+import com.gecng.routerlib.collector.ModuleTableCollector
+import com.gecng.routerlib.interceptor.InterceptorManager
 
 /**
  * Simple Router
@@ -18,16 +19,13 @@ class SRouter {
 
     //存放全部的路由信息
     private val routeMap: LinkedHashMap<String, RouterInfo> = LinkedHashMap()
-    private val interceptorMap: LinkedHashMap<String, InterceptorInfo> = LinkedHashMap()
 
-    //全局拦截器，全局拦截器，对所有的路由进行拦截
-    val globalIncepter: List<RouteInterceptor> = listOf()
-    // todo 是否需要添加module 级别的拦截器，对该module 级别下的路由进行拦截
+    private val interceptorManager: InterceptorManager = InterceptorManager()
 
 
     fun init(moduleList: List<String>) {
         routeMap.putAll(ModuleTableCollector.collect(moduleList))
-        interceptorMap.putAll(ModuleInterceptorCollector.collect(moduleList))
+        interceptorManager.init(moduleList)
     }
 
 
@@ -45,13 +43,18 @@ class SRouter {
         if (routerInfo === null) {
             return
         }
+        if (interceptorManager.onIntercept(routerInfo.interceptors)) {
+            //todo 被拦截了
+        } else {
+            // todo 没有被拦截 进行跳转
 
-        val intent = Intent()
-        intent.setClass(paramBuilder.context!!, routerInfo.clazz)
-        if (paramBuilder.bundle != null) {
-            intent.putExtras(paramBuilder.bundle!!)
+            val intent = Intent()
+            intent.setClass(paramBuilder.context!!, routerInfo.clazz)
+            if (paramBuilder.bundle != null) {
+                intent.putExtras(paramBuilder.bundle!!)
+            }
+            paramBuilder.context!!.startActivity(intent)
         }
-        paramBuilder.context!!.startActivity(intent)
 
 
     }

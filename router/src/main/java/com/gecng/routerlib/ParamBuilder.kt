@@ -2,8 +2,6 @@ package com.gecng.routerlib
 
 import android.content.Context
 import android.os.Bundle
-import com.gecng.routerlib.interceptor.IInterceptor
-import java.util.*
 
 class ParamBuilder {
 
@@ -12,21 +10,20 @@ class ParamBuilder {
 
     var context: Context? = null
 
-    var interceptors: LinkedList<IInterceptor>? = null
 
     fun path(path: String) = apply {
         this.path = path
     }
 
-
-    fun withInterceptor(with: (LinkedList<IInterceptor>) -> LinkedList<IInterceptor>) =
-        apply {
-            if (interceptors === null) {
-                interceptors = LinkedList()
-            }
-            interceptors = with(interceptors!!)
-
-        }
+//
+//    fun withInterceptor(with: (LinkedList<IInterceptor>) -> LinkedList<IInterceptor>) =
+//        apply {
+//            if (interceptors === null) {
+//                interceptors = LinkedList()
+//            }
+//            interceptors = with(interceptors!!)
+//
+//        }
 
 
     fun keyAndValue(key: String, value: Any) = apply {

@@ -1,4 +1,4 @@
-package com.gecng.routerlib
+package com.gecng.routerlib.collector
 
 import com.gecng.routeannotation.IInterceptorTable
 import com.gecng.routeannotation.InterceptorInfo

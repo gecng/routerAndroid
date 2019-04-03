@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import com.gecng.routeannotation.Route
 
-@Route(path = "sec/main", interceptors = ["sec/xx", "sec/xx2"])
+@Route(path = "sec/main", interceptors = ["app/login"])
 class SecModuleActOne : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
