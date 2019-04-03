@@ -15,10 +15,16 @@ class ModuleTableCollector {
 
             moduleList.forEach { module ->
                 val clazzPath = String.format(RouteConst.ROUTE_TABLE_PATH_FORMAT, module)
-                val moduleMap = (Class.forName(clazzPath).newInstance() as? IRouteTable)?.register()
-                if (moduleMap != null) {
-                    totalMap.putAll(moduleMap)
+                try {
+                    val moduleMap = (Class.forName(clazzPath).newInstance() as? IRouteTable)?.register()
+                    if (moduleMap != null) {
+                        totalMap.putAll(moduleMap)
+                    }
+
+                }catch (e:ClassNotFoundException){
+                    //部分模块 可能木有拦截器
                 }
+
             }
 
             return totalMap

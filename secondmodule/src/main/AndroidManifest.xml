@@ -1,0 +1,8 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.h4h4da.secondmodule">
+
+
+    <application>
+        <activity android:name=".SecModuleActOne" />
+    </application>
+</manifest>

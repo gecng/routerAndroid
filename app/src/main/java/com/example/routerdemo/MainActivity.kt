@@ -2,7 +2,6 @@ package com.example.routerdemo
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import com.gecng.routeannotation.IRouteTable
 import com.gecng.routeannotation.Route
 import com.gecng.routerlib.SRouter
 import com.gecng.routerlib.interceptor.IInterceptor
@@ -16,7 +15,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         tvHello.setOnClickListener {
             SRouter.INSTANCE.context(this@MainActivity)
-                .path("app/second")
+                .path("sec/main")
                 .keyAndValue("name","android")
                 .keyAndValue("arg1", "tried")
                 .withInterceptor { lists ->

@@ -2,6 +2,7 @@ package com.gecng.routerlib
 
 import android.content.Context
 import android.content.Intent
+import com.gecng.routeannotation.InterceptorInfo
 import com.gecng.routeannotation.RouterInfo
 
 /**
@@ -16,17 +17,17 @@ class SRouter {
     }
 
     //存放全部的路由信息
-    val map: LinkedHashMap<String, RouterInfo> = LinkedHashMap()
-
-    var moduleList: List<String>? = null
+    private val routeMap: LinkedHashMap<String, RouterInfo> = LinkedHashMap()
+    private val interceptorMap: LinkedHashMap<String, InterceptorInfo> = LinkedHashMap()
 
     //全局拦截器，全局拦截器，对所有的路由进行拦截
     val globalIncepter: List<RouteInterceptor> = listOf()
     // todo 是否需要添加module 级别的拦截器，对该module 级别下的路由进行拦截
 
 
-    fun init() {
-        map.putAll(ModuleTableCollector.collect(listOf("app")))
+    fun init(moduleList: List<String>) {
+        routeMap.putAll(ModuleTableCollector.collect(moduleList))
+        interceptorMap.putAll(ModuleInterceptorCollector.collect(moduleList))
     }
 
 
@@ -37,7 +38,7 @@ class SRouter {
     fun route(paramBuilder: ParamBuilder) {
 
         val path = paramBuilder.path
-        val routerInfo = map[path]
+        val routerInfo = routeMap[path]
         if (path.isNullOrBlank()) {
             return
         }

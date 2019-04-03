@@ -47,16 +47,27 @@ class ActivityHandler : BaseProcessor() {
                 .addStatement("val info%L = %T(%S, %T::class.java)", index, RouterInfo::class.java, path, e.asType())
                 .apply {
                     if (!interceptors.isNullOrEmpty()) {
+                        //todo 为什么使用 arrayList有问题
+//                        addStatement(
+//                            "val interceptorArray%L = %T(%L)",
+//                            index,
+//                            ArrayList::class.parameterizedBy(String::class),
+//                            interceptors.size
+//                        )
+
                         addStatement(
-                            "val interceptorArray%L = %T(%L)",
+                            "val interceptorArray%L = mutableListOf<%T>()",
                             index,
-                            ArrayList::class.parameterizedBy(String::class),
-                            interceptors.size
+                           String::class
                         )
 
                         interceptors.forEachIndexed { j, intercept ->
-                            addStatement("interceptorArray%L[%L] = %S", index, j, intercept)
+                            addStatement("interceptorArray%L.add(%S)", index, intercept)
                         }
+
+//                        interceptors.forEachIndexed { j, intercept ->
+//                            addStatement("interceptorArray%L[%L] = %S", index, j, intercept)
+//                        }
 
                         addStatement("info%1L.interceptors = interceptorArray%1L", index)
 
