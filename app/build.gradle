@@ -29,13 +29,8 @@ android {
         }
     }
 
-
     sourceSets {
-        main {
-            java {
-                srcDir "${project.getRootProject().buildDir.absolutePath}/generated/source/kaptKotlin/"
-            }
-        }
+        main.java.srcDirs += "build/generated/source/kaptKotlin/main"
     }
 
 

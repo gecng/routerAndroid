@@ -27,7 +27,7 @@ class InterceptorHandler : BaseProcessor() {
 
     override fun process(set: MutableSet<out TypeElement>?, roundEnv: RoundEnvironment?): Boolean {
 
-
+        logger.N("process  ====>>>>>")
         val elements = roundEnv?.getElementsAnnotatedWith(Interceptor::class.java)
         if (elements.isNullOrEmpty()) {
             return false

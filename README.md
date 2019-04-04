@@ -8,6 +8,10 @@
 #### 1.activity 跳转
 #### 2.拦截器
 ---
+### 相关资料
+#### 1. kotlin 注解生成代码 https://github.com/JetBrains/kotlin-examples/tree/master/gradle/kotlin-code-generation
+#### 2. kotlin poet
+---
 
 ### TodoList
 #### 1. 添加UrlParser ，解析url ，URL可能非明文。

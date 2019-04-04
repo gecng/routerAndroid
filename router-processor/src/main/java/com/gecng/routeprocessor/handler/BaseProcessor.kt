@@ -5,6 +5,7 @@ import com.squareup.kotlinpoet.FileSpec
 import java.io.File
 import javax.annotation.processing.AbstractProcessor
 import javax.annotation.processing.ProcessingEnvironment
+import javax.tools.StandardLocation
 
 
 /**
@@ -35,8 +36,11 @@ abstract class BaseProcessor : AbstractProcessor() {
 
     /**
      * 写文件
+     *
+     * https://github.com/JetBrains/kotlin-examples/tree/master/gradle/kotlin-code-generation/annotation-processor/src/main/java
      */
     fun write2File(fileSpec: FileSpec) {
+
         val kaptKotlinGeneratedDir = processingEnv.options[KAPT_KOTLIN_GENERATED_OPTION_NAME]
         val outputFile = File(kaptKotlinGeneratedDir).apply {
             mkdirs()
