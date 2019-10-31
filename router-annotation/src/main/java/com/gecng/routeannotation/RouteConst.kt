@@ -10,11 +10,10 @@ class RouteConst {
         //自动生成代码的路径
         private const val COMMON_GENERATE_FILE_PATH = "$PACKAGE_NAME.infos"
 
-
+        //路由表的包名
         const val INTERCEPTOR_FILE_DIR = "$COMMON_GENERATE_FILE_PATH.interceptor"
-
+        //拦截器表的包名
         const val ROUTE_FILE_DIR = "$COMMON_GENERATE_FILE_PATH.route"
-
 
         const val ROUTE_TABLE_NAME_FORMAT = "%s_route_table"
         //路由表 路径

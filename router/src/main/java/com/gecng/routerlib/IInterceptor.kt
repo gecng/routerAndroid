@@ -1,4 +1,4 @@
-package com.gecng.routeannotation
+package com.gecng.routerlib
 
 interface IInterceptor {
     /**
@@ -6,6 +6,6 @@ interface IInterceptor {
      * true -》 被拦截了
      * false -》 不拦截
      */
-    fun onIntercept(): Boolean
+    fun onIntercept(routeRequest: RouteRequest): Boolean
 
 }

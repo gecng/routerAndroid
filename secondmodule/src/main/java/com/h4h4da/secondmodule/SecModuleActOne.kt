@@ -2,6 +2,7 @@ package com.h4h4da.secondmodule
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import com.gecng.routeannotation.Route
 
 @Route(path = "sec/main", interceptors = ["app/login"])
@@ -11,6 +12,11 @@ class SecModuleActOne : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.sec_activity_main)
+
+
+        Log.d("sec", intent.getStringExtra("name"))
+
+        Log.d("sec", intent.getStringExtra("arg1"))
     }
 
 

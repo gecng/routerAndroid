@@ -16,7 +16,7 @@ class Logger(val messager: Messager? = null) {
 
     fun N(msg: String) {
 
-        printMsg(Diagnostic.Kind.WARNING, msg)
+        printMsg(Diagnostic.Kind.NOTE, msg)
     }
 
     fun O(msg: String) {

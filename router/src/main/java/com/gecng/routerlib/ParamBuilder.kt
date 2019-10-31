@@ -1,51 +1,40 @@
 package com.gecng.routerlib
 
 import android.content.Context
-import android.os.Bundle
+import android.content.Intent
+import com.gecng.routerlib.parser.RouteRequestBody
 
-class ParamBuilder {
+class ParamBuilder(var path: String) {
 
-    var path: String? = null
-    var bundle: Bundle? = null
+    private var mIntent: Intent? = null
 
-    var context: Context? = null
+    fun setValue(key: String, value: Any) = apply {
 
-
-    fun path(path: String) = apply {
-        this.path = path
-    }
-
-//
-//    fun withInterceptor(with: (LinkedList<IInterceptor>) -> LinkedList<IInterceptor>) =
-//        apply {
-//            if (interceptors === null) {
-//                interceptors = LinkedList()
-//            }
-//            interceptors = with(interceptors!!)
-//
-//        }
-
-
-    fun keyAndValue(key: String, value: Any) = apply {
-        if (bundle === null) {
-            bundle = Bundle()
+        if (mIntent === null) {
+            mIntent = Intent()
         }
+        val i = mIntent!!
         when (value) {
-            is String -> {
-                bundle!!.putString(key, value)
-            }
-            is Boolean -> {
-                bundle!!.putBoolean(key, value)
-            }
-            is Int -> {
-                bundle!!.putInt(key, value)
-            }
+            is String -> i.putExtra(key, value)
+            is Boolean -> i.putExtra(key, value)
+            is Int -> i.putExtra(key, value)
+            is Long -> i.putExtra(key, value)
+            is Char -> i.putExtra(key, value)
         }
     }
 
 
     fun route() {
-        SRouter.INSTANCE.route(this)
+        val body = RouteRequestBody()
+        body.apply {
+            setPath(path)
+            if (mIntent != null) {
+                setIntent(mIntent!!)
+            }
+        }
+
+        SRouter.INSTANCE.route(body)
     }
 
+    fun route(context: Context) {}
 }

@@ -1,12 +1,13 @@
 package com.gecng.routerlib.interceptor
 
 import android.util.Log
-import com.gecng.routeannotation.IInterceptor
+import com.gecng.routerlib.IInterceptor
 import com.gecng.routeannotation.InterceptorInfo
 import com.gecng.routerlib.RouteInterceptor
+import com.gecng.routerlib.RouteRequest
 import com.gecng.routerlib.collector.ModuleInterceptorCollector
 
-@Suppress("SENSELESS_COMPARISON")
+
 class InterceptorManager {
 
 
@@ -17,20 +18,28 @@ class InterceptorManager {
 
 
     //拦截信息
-    private val interceptorMap: LinkedHashMap<String, InterceptorInfo> = LinkedHashMap()
+    private val interceptorList: LinkedHashMap<String, InterceptorInfo> = LinkedHashMap()
 
     fun init(moduleList: List<String>) {
-        interceptorMap.putAll(ModuleInterceptorCollector.collect(moduleList))
+        interceptorList.clear()
+        interceptorList.putAll(ModuleInterceptorCollector.collect(moduleList))
     }
 
-    fun onIntercept(interceptors: List<String>?): Boolean {
+    /**
+     * 添加全局拦截器
+     */
+    fun addGlobalInceptor() {
+
+    }
+
+    fun onIntercept(request: RouteRequest, interceptors: List<String>?): Boolean {
         if (interceptors.isNullOrEmpty()) {
             return false
         }
         interceptors.forEach { url ->
             if (!url.isBlank()) {
-                val info = interceptorMap[url]
-                if (shouldIntercept(info)) {
+                val info = interceptorList[url]
+                if (shouldIntercept(request, info)) {
                     Log.d("InterceptorManager", "$url ======>  被拦截")
                     return true
                 }
@@ -45,21 +54,16 @@ class InterceptorManager {
      * true 拦截
      * false 不拦截
      */
-    private fun shouldIntercept(info: InterceptorInfo?): Boolean {
+    private fun shouldIntercept(request: RouteRequest, info: InterceptorInfo?): Boolean {
         if (info == null) {
             return false
         }
-        if (info.clazz == null) {
-            return false
+        var interceptor: IInterceptor? = null
+        try {
+            interceptor = info.clazz.newInstance() as? IInterceptor
+        } catch (e: Exception) {
         }
-        if (info.interceptor == null) {
-            try {
-                info.interceptor = info.clazz.newInstance() as? IInterceptor
-            } catch (e: Exception) {
-
-            }
-        }
-        return info.interceptor?.onIntercept() ?: false
-
+        if (interceptor == null) return false
+        return interceptor.onIntercept(request)
     }
 }

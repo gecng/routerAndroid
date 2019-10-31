@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import com.gecng.routeannotation.Route
 import com.gecng.routerlib.SRouter
+import com.gecng.routerlib.build
 import kotlinx.android.synthetic.main.activity_main.*
 
 @Route(path = "app/mainAct")
@@ -30,10 +31,15 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun jump2Other() {
-        SRouter.INSTANCE.context(this@MainActivity)
-            .path("sec/main")
-            .keyAndValue("name", "android")
-            .keyAndValue("arg1", "tried").route()
+//        SRouter.INSTANCE.context(this@MainActivity)
+//            .path("sec/main")
+//            .setValue("name", "android")
+//            .setValue("arg1", "tried").route()
+
+        SRouter.INSTANCE.build("sec/main")
+            .setValue("name", "android")
+            .setValue("arg1", "tired")
+            .route()
     }
 
 

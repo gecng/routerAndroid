@@ -1,10 +1,14 @@
 package com.gecng.routerlib
 
+import android.app.Application
 import android.content.Context
 import android.content.Intent
 import com.gecng.routeannotation.RouterInfo
+import com.gecng.routerlib.activitymanager.ActivityStackManager
 import com.gecng.routerlib.collector.ModuleTableCollector
 import com.gecng.routerlib.interceptor.InterceptorManager
+import com.gecng.routerlib.parser.PathParserManager
+import com.gecng.routerlib.parser.RouteRequestBody
 
 /**
  * Simple Router
@@ -12,57 +16,52 @@ import com.gecng.routerlib.interceptor.InterceptorManager
 class SRouter {
 
     companion object {
-        val INSTANCE: SRouter by lazy {
-            SRouter()
-        }
+        val INSTANCE: SRouter by lazy { SRouter() }
     }
 
     //存放全部的路由信息
     private val routeMap: LinkedHashMap<String, RouterInfo> = LinkedHashMap()
-
+    //拦截管理器
     private val interceptorManager: InterceptorManager = InterceptorManager()
 
-
-    fun init(moduleList: List<String>) {
+    /**
+     * 在application中初始化
+     * @param moduleList List<String>
+     */
+    fun init(app: Application, moduleList: List<String>) {
+        //监听activity，方便手动管理activity栈
+        app.registerActivityLifecycleCallbacks(ActivityStackManager.INSTANCE.getActivityLifeCycleCallback())
+        //装载路由表
         routeMap.putAll(ModuleTableCollector.collect(moduleList))
+        //装载拦截器
         interceptorManager.init(moduleList)
     }
 
+    fun route(body: RouteRequestBody) {
 
-    fun context(context: Context): ParamBuilder {
-        return ParamBuilder().apply { this.context = context }
-    }
+        //获取路由表中的path
+        val routeTablePath = PathParserManager.parseRoutePath(body)
+        val intent = PathParserManager.parseParams(body)
 
-    fun route(paramBuilder: ParamBuilder) {
+        val routerInfo = routeMap[routeTablePath] ?: return
+        val ctx = body.getContext() ?: ActivityStackManager.INSTANCE.getTopActivity()
 
-        val path = paramBuilder.path
-        val routerInfo = routeMap[path]
-        if (path.isNullOrBlank()) {
-            return
-        }
-        if (routerInfo === null) {
-            return
-        }
-        if (interceptorManager.onIntercept(routerInfo.interceptors)) {
-            //todo 被拦截了
-        } else {
-            // todo 没有被拦截 进行跳转
 
-            val intent = Intent()
-            intent.setClass(paramBuilder.context!!, routerInfo.clazz)
-            if (paramBuilder.bundle != null) {
-                intent.putExtras(paramBuilder.bundle!!)
+        //组装 RouteRequest
+        intent.setClass(ctx!!, routerInfo.clazz)
+        val req = RouteRequest(context = ctx, path = routeTablePath, intent = intent)
+
+        //是否拦截
+        when (interceptorManager.onIntercept(req, routerInfo.interceptors)) {
+            true -> {//被拦截了，路由转发
+
             }
-            paramBuilder.context!!.startActivity(intent)
+            else -> {//没有被拦截，进行路由跳转
+                ctx.startActivity(intent)
+            }
         }
-
-
-    }
-
-
-    fun routeWithResult(paramBuilder: ParamBuilder) {
-
-
+        body.recycle()
+        req.recycle()
     }
 
 
