@@ -1,6 +1,7 @@
 package com.gecng.routerlib.parser
 
 import android.content.Intent
+import com.gecng.routerlib.RouteRequestBody
 
 object PathParserManager {
 
@@ -29,7 +30,7 @@ object PathParserManager {
     }
 
     fun addParser(parser: IParser) {
-
+        parserList.add(parser)
     }
 
     fun removeParse() {}

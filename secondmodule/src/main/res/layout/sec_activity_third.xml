@@ -2,20 +2,20 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
     android:orientation="vertical">
-
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="seccond main"
-        android:textColor="#111111"
-        android:textSize="27sp" />
+        android:layout_gravity="center_horizontal"
+        android:padding="10dp"
+        android:text="第三个activity"
+        android:textSize="19sp" />
 
     <Button
-        android:id="@+id/jump2Third"
+        android:id="@+id/jump2Main"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:text="返回首页" />
 
 </LinearLayout>

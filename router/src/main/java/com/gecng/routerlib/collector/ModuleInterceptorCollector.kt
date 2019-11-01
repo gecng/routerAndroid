@@ -22,8 +22,8 @@ class ModuleInterceptorCollector {
                     if (moduleMap != null) {
                         totalMap.putAll(moduleMap)
                     }
-
-                } catch (e: ClassNotFoundException) {
+                } catch (e: Throwable) {
+                    e.printStackTrace()
                 }
             }
             return totalMap

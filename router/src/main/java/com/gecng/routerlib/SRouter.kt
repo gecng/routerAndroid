@@ -1,14 +1,12 @@
 package com.gecng.routerlib
 
 import android.app.Application
-import android.content.Context
-import android.content.Intent
+import android.net.RouteInfo
 import com.gecng.routeannotation.RouterInfo
 import com.gecng.routerlib.activitymanager.ActivityStackManager
 import com.gecng.routerlib.collector.ModuleTableCollector
 import com.gecng.routerlib.interceptor.InterceptorManager
 import com.gecng.routerlib.parser.PathParserManager
-import com.gecng.routerlib.parser.RouteRequestBody
 
 /**
  * Simple Router
@@ -39,13 +37,12 @@ class SRouter {
 
     fun route(body: RouteRequestBody) {
 
-        //获取路由表中的path
+        //解析出body中对应 路由表的路径
         val routeTablePath = PathParserManager.parseRoutePath(body)
         val intent = PathParserManager.parseParams(body)
 
         val routerInfo = routeMap[routeTablePath] ?: return
         val ctx = body.getContext() ?: ActivityStackManager.INSTANCE.getTopActivity()
-
 
         //组装 RouteRequest
         intent.setClass(ctx!!, routerInfo.clazz)
@@ -53,15 +50,21 @@ class SRouter {
 
         //是否拦截
         when (interceptorManager.onIntercept(req, routerInfo.interceptors)) {
-            true -> {//被拦截了，路由转发
+            //被拦截了，路由转发
+            true -> {
 
             }
-            else -> {//没有被拦截，进行路由跳转
+            //没有被拦截，进行路由跳转
+            else -> {
                 ctx.startActivity(intent)
             }
         }
         body.recycle()
         req.recycle()
+    }
+
+    fun getRouteInfoByPath(path: String): RouterInfo? {
+        return routeMap[path]
     }
 
 

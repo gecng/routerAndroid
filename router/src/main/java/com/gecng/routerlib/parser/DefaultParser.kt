@@ -1,8 +1,7 @@
 package com.gecng.routerlib.parser
 
 import android.content.Intent
-import com.gecng.routerlib.RouteRequest
-import com.gecng.routerlib.activitymanager.ActivityStackManager
+import com.gecng.routerlib.RouteRequestBody
 
 class DefaultParser : IParser {
 

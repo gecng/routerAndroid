@@ -1,6 +1,7 @@
 package com.gecng.routerlib.parser
 
 import android.content.Intent
+import com.gecng.routerlib.RouteRequestBody
 
 /**
  * 将各种形式的路由进行转换

@@ -2,7 +2,6 @@ package com.gecng.routerlib
 
 import android.content.Context
 import android.content.Intent
-import com.gecng.routerlib.parser.RouteRequestBody
 
 class ParamBuilder(var path: String) {
 
@@ -32,7 +31,6 @@ class ParamBuilder(var path: String) {
                 setIntent(mIntent!!)
             }
         }
-
         SRouter.INSTANCE.route(body)
     }
 

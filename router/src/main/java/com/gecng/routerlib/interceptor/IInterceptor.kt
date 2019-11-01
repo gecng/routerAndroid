@@ -1,4 +1,6 @@
-package com.gecng.routerlib
+package com.gecng.routerlib.interceptor
+
+import com.gecng.routerlib.RouteRequest
 
 interface IInterceptor {
     /**

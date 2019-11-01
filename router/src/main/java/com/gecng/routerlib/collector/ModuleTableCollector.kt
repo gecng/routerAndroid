@@ -25,6 +25,7 @@ class ModuleTableCollector {
                     val moduleMap = routeTable.register()
                     totalMap.putAll(moduleMap)
                 } catch (e: Exception) {
+                    e.printStackTrace()
                     //部分模块 可能木有拦截器
                 }
             }

@@ -1,9 +1,7 @@
 package com.gecng.routerlib.interceptor
 
 import android.util.Log
-import com.gecng.routerlib.IInterceptor
 import com.gecng.routeannotation.InterceptorInfo
-import com.gecng.routerlib.RouteInterceptor
 import com.gecng.routerlib.RouteRequest
 import com.gecng.routerlib.collector.ModuleInterceptorCollector
 
@@ -12,9 +10,9 @@ class InterceptorManager {
 
 
     //全局拦截器，全局拦截器，对所有的路由进行拦截
-    val globalInceptor: List<RouteInterceptor> = listOf()
+    private val globalInterceptors: MutableList<IInterceptor> = mutableListOf()
     // todo 是否需要添加module 级别的拦截器，对该module 级别下的路由进行拦截
-    val moduleInceptor = null
+    private val moduleInceptor = null
 
 
     //拦截信息
@@ -25,12 +23,6 @@ class InterceptorManager {
         interceptorList.putAll(ModuleInterceptorCollector.collect(moduleList))
     }
 
-    /**
-     * 添加全局拦截器
-     */
-    fun addGlobalInceptor() {
-
-    }
 
     fun onIntercept(request: RouteRequest, interceptors: List<String>?): Boolean {
         if (interceptors.isNullOrEmpty()) {
@@ -65,5 +57,20 @@ class InterceptorManager {
         }
         if (interceptor == null) return false
         return interceptor.onIntercept(request)
+    }
+
+    /**
+     * 添加全局拦截器
+     */
+    fun addGlobalInceptor(interceptor: IInterceptor) {
+        globalInterceptors.add(interceptor)
+    }
+
+    /**
+     * 移除全局拦截器
+     * @param interceptor IInterceptor
+     */
+    fun removeGlobalInceptor(interceptor: IInterceptor) {
+        globalInterceptors.remove(interceptor)
     }
 }

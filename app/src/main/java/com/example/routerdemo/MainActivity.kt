@@ -31,10 +31,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun jump2Other() {
-//        SRouter.INSTANCE.context(this@MainActivity)
-//            .path("sec/main")
-//            .setValue("name", "android")
-//            .setValue("arg1", "tried").route()
 
         SRouter.INSTANCE.build("sec/main")
             .setValue("name", "android")

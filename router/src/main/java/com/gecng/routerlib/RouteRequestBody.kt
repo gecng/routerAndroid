@@ -1,12 +1,19 @@
-package com.gecng.routerlib.parser
+package com.gecng.routerlib
 
 import android.content.Context
 import android.content.Intent
 
+/**
+ * todo 这里 requestBody 有点不合理，是否需要区分 不同类型过来的 requestBody
+ *
+ * @property mIntent Intent?
+ * @property mOriginPath String
+ * @property mContext Context?
+ */
 class RouteRequestBody {
     private var mIntent: Intent? = null
 
-    private var mPath = ""
+    private var mOriginPath = ""
 
     private var mContext: Context? = null
 
@@ -22,14 +29,14 @@ class RouteRequestBody {
     }
 
     fun setPath(path: String) {
-        this.mPath = path
+        this.mOriginPath = path
     }
 
     fun setIntent(i: Intent) {
         this.mIntent = i
     }
 
-    fun getPath() = mPath
+    fun getPath() = mOriginPath
 
     fun recycle() {
         mContext = null
