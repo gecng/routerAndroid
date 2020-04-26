@@ -1,7 +1,7 @@
 package com.h4h4da.secondmodule
 
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import android.util.Log
 import com.gecng.routeannotation.Route
 import com.gecng.routerlib.SRouter

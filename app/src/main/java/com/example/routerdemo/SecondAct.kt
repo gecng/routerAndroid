@@ -1,8 +1,8 @@
 package com.example.routerdemo
 
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
 import com.gecng.routeannotation.Route
 import com.gecng.routerlib.SRouter
 import com.gecng.routerlib.build

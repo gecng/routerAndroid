@@ -30,12 +30,18 @@ class ActivityHandler : BaseProcessor() {
         if (elements.isNullOrEmpty()) {
             return false
         }
-        val activityList = elements.filter { return@filter ActivityFilter.filter(it) }.toMutableList()
+        val activityList =
+            elements.filter { return@filter ActivityFilter.filter(it) }.toMutableList()
         val mapType = LinkedHashMap::class.parameterizedBy(String::class, RouterInfo::class)
         val funBuilder = FunSpec.builder("register")
             .addModifiers(KModifier.OVERRIDE)
             .returns(mapType)
-            .addStatement("val routeMap = %T<%T,%T>()", LinkedHashMap::class.java, String::class, RouterInfo::class)
+            .addStatement(
+                "val routeMap = %T<%T,%T>()",
+                LinkedHashMap::class.java,
+                String::class,
+                RouterInfo::class
+            )
             .addStatement("\n")
 
         activityList.forEachIndexed { index, e ->
@@ -44,7 +50,13 @@ class ActivityHandler : BaseProcessor() {
             val interceptors = routeAnn.interceptors
 
             funBuilder
-                .addStatement("val info%L = %T(%S, %T::class.java)", index, RouterInfo::class.java, path, e.asType())
+                .addStatement(
+                    "val info%L = %T(%S, %T::class.java)",
+                    index,
+                    RouterInfo::class.java,
+                    path,
+                    e.asType()
+                )
                 .apply {
                     if (!interceptors.isNullOrEmpty()) {
                         //todo 为什么使用 arrayList有问题
@@ -58,7 +70,7 @@ class ActivityHandler : BaseProcessor() {
                         addStatement(
                             "val interceptorArray%L = mutableListOf<%T>()",
                             index,
-                           String::class
+                            String::class
                         )
 
                         interceptors.forEachIndexed { j, intercept ->

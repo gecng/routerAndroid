@@ -1,0 +1,10 @@
+apply plugin: 'com.novoda.bintray-release'
+
+publish {
+    userOrg = 'loop6r'
+    groupId = 'com.loop6r.router'
+    artifactId = bintrayArtifactId
+    publishVersion = '0.0.1'
+    desc = 'first commit'
+    website = 'https://github.com/'
+}

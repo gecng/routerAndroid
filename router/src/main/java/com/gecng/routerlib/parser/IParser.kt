@@ -7,7 +7,9 @@ import com.gecng.routerlib.RouteRequestBody
  * 将各种形式的路由进行转换
  *
  * 场景1：原生发起路由  "/app/login"
- * 场景2：server下发btn的跳转路径 schema "xxx://module/submodule/component?param=1&param2=test"
+ * 场景2：server下发btn的跳转路径 schema "xxx://module/submodule/component?param={"name":1}&param2=test"
+ * //todo 复杂参数解析
+ * 针对场景2 动态解析交给activity 内部处理？
  */
 interface IParser {
 
